@@ -1,0 +1,137 @@
+@startuml
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+title ITSC — Diagrama de clases UML simplificado
+package "Académica" {
+class Carrera #dcefe3 {
+  - id: int
+  - nombre: String
+  - duracionAnios: int
+  --
+  + listarMaterias(): Lista<Materia>
+}
+class Materia #dcefe3 {
+  - id: int
+  - codigo: String
+  - nombre: String
+  --
+  + consultarOferta(): Lista<Oferta>
+}
+class Docente #dcefe3 {
+  - id: int
+  - nombres: String
+  - apellidos: String
+  --
+  + registrarNota(): void
+}
+class Oferta #dcefe3 {
+  - id: int
+  - paralelo: String
+  - turno: String
+  - cupo: int
+  --
+  + consultarCupos(): int
+}
+}
+package "Estudiantil" {
+class Estudiante #dbeafa {
+  - id: int
+  - registro: String
+  - nombres: String
+  - apellidos: String
+  --
+  + consultarBoletin(): Boletin
+}
+class Matricula #dbeafa {
+  - id: int
+  - fecha: Date
+  - estado: String
+  --
+  + inscribirMateria(): Inscripcion
+}
+class Inscripcion #dbeafa {
+  - id: int
+  - estado: String
+  --
+  + consultarResultado(): ResultadoFinal
+}
+}
+package "Evaluación" {
+class Evaluacion #e9e1f4 {
+  - id: int
+  - nombre: String
+  - componente: String
+  - peso: Decimal
+  --
+  + consultarCalificaciones(): Lista<Calificacion>
+}
+class Calificacion #e9e1f4 {
+  - nota: Decimal
+  --
+  + validarNota(): Boolean
+}
+class ResultadoFinal #e9e1f4 {
+  - promedio: Decimal
+  - porcentajeAsistencia: Decimal
+  - estado: String
+  --
+  + consultarAprobacion(): Boolean
+}
+}
+package "Finanzas" {
+class Cargo #fff0cc {
+  - id: int
+  - concepto: String
+  - monto: Decimal
+  - vencimiento: Date
+  --
+  + calcularSaldo(): Decimal
+}
+class Pago #fff0cc {
+  - id: int
+  - recibo: String
+  - monto: Decimal
+  - fecha: Date
+  - metodo: String
+  --
+  + consultarRecibo(): String
+}
+}
+package "Graduación" {
+class ProyectoGraduacion #f9e1d7 {
+  - id: int
+  - titulo: String
+  - estado: String
+  --
+  + consultarDefensas(): Lista<Defensa>
+}
+class Defensa #f9e1d7 {
+  - id: int
+  - fecha: DateTime
+  - nota: Decimal
+  - acta: String
+  --
+  + consultarActa(): String
+}
+}
+Carrera "1" -- "0..*" Materia : ofrece
+Carrera "1" -- "0..*" Matricula : recibe
+Materia "1" -- "0..*" Oferta : se programa en
+Docente "1" -- "0..*" Oferta : imparte
+Estudiante "1" -- "0..*" Matricula : realiza
+Matricula "1" -- "0..*" Inscripcion : contiene
+Oferta "1" -- "0..*" Inscripcion : recibe
+Oferta "1" -- "0..*" Evaluacion : define
+Inscripcion "1" -- "0..*" Calificacion : registra
+Evaluacion "1" -- "0..*" Calificacion : recibe
+Inscripcion "1" -- "0..1" ResultadoFinal : obtiene
+Matricula "1" -- "0..*" Cargo : genera
+Cargo "1" -- "0..*" Pago : recibe
+Matricula "1" -- "0..*" ProyectoGraduacion : presenta
+ProyectoGraduacion "1" -- "0..*" Defensa : tiene
+Docente "0..1" -- "0..*" ProyectoGraduacion : tutela
+note "Modelo simplificado. Las operaciones son propuestas de diseño.
+No representan métodos PHP ya implementados." as Nota
+@enduml
